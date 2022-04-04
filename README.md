@@ -1,4 +1,4 @@
-# starter_folder
+# Using Twitter to determine difficulty of Wordle
 
 This repository contains a report which aims to analyze the public opinion of the difficulty of the daily online game Wordle. This is done by using the Twitter API to determine how successful users of the social media platform are each day in completing the game.
 
