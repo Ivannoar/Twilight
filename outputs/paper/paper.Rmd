@@ -1,12 +1,11 @@
 ---
-title: "My title"
+title: "Analyzing difficulty of Wordle using aggregate Twitter responses to determine public reaction"
 subtitle: "My subtitle if needed"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Ivan Li
+thanks: "Code and data are available at: https://github.com/Ivannoar/Twilight."
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Using the Twitter API, data was gathered recording the public scores of Wordle players over one month. The frequency of each daily score was obtained and analyzed based on level of success, time, and geographical location. It was found that ___. These results may have significance in literary and linguistic analysis."
 output:
   bookdown::pdf_document2
 toc: FALSE
@@ -17,60 +16,25 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(palmerpenguins)
 ```
 
 # Introduction
+(put citations later)
+Wordle is an online word-guessing game bearing resemblance to historically popular word puzzles such as the New York Times crossword puzzle and the board game Mastermind. Players are given a five-letter word each day and are asked to guess the word within six tries. If the word is not guessed in earlier attempts, the letters for your word will become either grey, yellow, or green: grey indicating that the letter was not found anywhere in the word, yellow indicating the presence of the letter but in the wrong position, and green indicating both letter and position are correct. The goal is to guess five green letters and therefore the correct word. The game was created by Josh Wardle, a software engineer who created the game for himself and his partner to pass the time during the 2021 COVID-19 pandemic. The meteoric rise in popularity of his creation has been attributed to a feature where players can easily copy and paste their results to share with their friends and family. Wardle's game found international spread in late December of 2021 thanks to multiple factors, including the ease in sharing results and the daily nature of the game, as well as its simplicity. Wordle's popularity can be seen to its fullest extent on Twitter, where millions of users share their results every day by pasting their scores via the website's built-in feature. 
 
-You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point). 
+This paper aims to analyze several metrics of Wordle's popularity on Twitter. As a result of millions of users sharing their scores each day, analysis can and has been done on variables including average score- a recent study found that Sweden was the country with the lowest average guesses with 3.72 average guesses out of a maximum of 6. Here, some key findings we wish to seek include attempting to model whether certain characteristics of a word correlate with its average difficulty, whether players have been improving in the game since its rise in popularity, and if the time of completion since the game resetting has any correlation with the average score. These metrics were not discussed deeply in prior papers and may be of interest to future puzzle makers, linguists, and game theorists. 
 
+Using the Twitter API, tweets pertaining to Wordle were gathered from various time periods in Wordle's popularity. The periods analyzed were the weeks following the game's rise in popularity, and the most recent week at time of writing (March 27 - April 2 2022). User scores were collected and aggregated along with time of posting, geographical location, and other data provided by Twitter. The results were turned into graphical data and analyzed according to our key missions. 
 
+In the Data section, we go over the data gathered from the Twitter API and how it was cleaned and arranged for proper statistical analysis. We discuss variables used, methodology, and graphs showing distributions of data. In the Model section, we discuss our model and its implications for how we interpret our results going forward. In the Results section, graphical data is shown and used to present our story according to the key goals and findings we discover during our analysis. Lastly, we discuss what has been done, its significance, and weaknesses of the paper in our Discussion section.
 
 # Data
 
-Our data is of penguins (Figure \@ref(fig:bills)).
-
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
-
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
-
-# This needs to be about the random data tha tI sasmpled?
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk way more about it. 
 
 
 
 # Model
 
-\begin{equation}
-Pr(\theta | y) = \frac{Pr(y | \theta) Pr(\theta)}{Pr(y)}  (\#eq:bayes)
-\end{equation}
-
-Equation \@ref(eq:bayes) seems useful, eh?
-
-Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
 
 
 # Results
@@ -79,15 +43,12 @@ We can use maths by including latex between dollar signs, for instance $\theta$.
 
 ## First discussion point
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
 ## Second discussion point
 
 ## Third discussion point
 
 ## Weaknesses and next steps
 
-Weaknesses and next steps should also be included.
 
 \newpage
 
