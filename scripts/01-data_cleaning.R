@@ -87,46 +87,46 @@ april23 <- search_tweets(q = "Wordle 308", n = 36000, retryonratelimit = TRUE, t
   
 
 april_4_clean <- filter(april_4, str_detect(text, 'Wordle 289 1/6|Wordle 289 2/6|Wordle 289 3/6|
-  Wordle 289 4/6|Wordle 289 5/6|Wordle 289 6/6|Wordle 289 X/6'))
+Wordle 289 4/6|Wordle 289 5/6|Wordle 289 6/6|Wordle 289 X/6'))
 
 april_5_clean <- filter(april_5, str_detect(text, 'Wordle 290 1/6|Wordle 290 2/6|Wordle 290 3/6|
-  Wordle 290 4/6|Wordle 290 5/6|Wordle 290 6/6|Wordle 290 X/6'))
+Wordle 290 4/6|Wordle 290 5/6|Wordle 290 6/6|Wordle 290 X/6'))
   
 april_6_clean <- filter(april_6, str_detect(text, 'Wordle 291 1/6|Wordle 291 2/6|Wordle 291 3/6|
-  Wordle 291 4/6|Wordle 291 5/6|Wordle 291 6/6|Wordle 291 X/6'))
+Wordle 291 4/6|Wordle 291 5/6|Wordle 291 6/6|Wordle 291 X/6'))
 
 april_7_clean <- filter(april_7, str_detect(text, 'Wordle 292 1/6|Wordle 292 2/6|Wordle 292 3/6|
-  Wordle 292 4/6|Wordle 292 5/6|Wordle 292 6/6|Wordle 292 X/6'))
+Wordle 292 4/6|Wordle 292 5/6|Wordle 292 6/6|Wordle 292 X/6'))
 
 april_8_clean <- filter(april_8, str_detect(text, 'Wordle 293 1/6|Wordle 293 2/6|Wordle 293 3/6|
-  Wordle 293 4/6|Wordle 293 5/6|Wordle 293 6/6|Wordle 293 X/6'))
+Wordle 293 4/6|Wordle 293 5/6|Wordle 293 6/6|Wordle 293 X/6'))
 
 april_9_clean <- filter(april_9, str_detect(text, 'Wordle 294 1/6|Wordle 294 2/6|Wordle 294 3/6|
-  Wordle 294 4/6|Wordle 294 5/6|Wordle 294 6/6|Wordle 294 X/6'))
+Wordle 294 4/6|Wordle 294 5/6|Wordle 294 6/6|Wordle 294 X/6'))
 
 april_10_clean <- filter(april_10, str_detect(text, 'Wordle 295 1/6|Wordle 295 2/6|Wordle 295 3/6|
-  Wordle 295 4/6|Wordle 295 5/6|Wordle 295 6/6|Wordle 295 X/6'))
+Wordle 295 4/6|Wordle 295 5/6|Wordle 295 6/6|Wordle 295 X/6'))
 
 april_17_clean <- filter(april_17, str_detect(text, 'Wordle 302 1/6|Wordle 302 2/6|Wordle 302 3/6|
-  Wordle 302 4/6|Wordle 302 5/6|Wordle 302 6/6|Wordle 302 X/6'))
+Wordle 302 4/6|Wordle 302 5/6|Wordle 302 6/6|Wordle 302 X/6'))
 
 april_18_clean <- filter(april_18, str_detect(text, 'Wordle 303 1/6|Wordle 303 2/6|Wordle 303 3/6|
-  Wordle 303 4/6|Wordle 303 5/6|Wordle 303 6/6|Wordle 303 X/6'))
+Wordle 303 4/6|Wordle 303 5/6|Wordle 303 6/6|Wordle 303 X/6'))
 
 april_19_clean <- filter(april_19, str_detect(text, 'Wordle 304 1/6|Wordle 304 2/6|Wordle 304 3/6|
-  Wordle 304 4/6|Wordle 304 5/6|Wordle 304 6/6|Wordle 304 X/6'))
+Wordle 304 4/6|Wordle 304 5/6|Wordle 304 6/6|Wordle 304 X/6'))
 
 april_20_clean <- filter(april_20, str_detect(text, 'Wordle 305 1/6|Wordle 305 2/6|Wordle 305 3/6|
-  Wordle 305 4/6|Wordle 305 5/6|Wordle 305 6/6|Wordle 305 X/6'))
+Wordle 305 4/6|Wordle 305 5/6|Wordle 305 6/6|Wordle 305 X/6'))
 
 april_21_clean <- filter(april_21, str_detect(text, 'Wordle 306 1/6|Wordle 306 2/6|Wordle 306 3/6|
-  Wordle 306 4/6|Wordle 306 5/6|Wordle 306 6/6|Wordle 306 X/6'))
+Wordle 306 4/6|Wordle 306 5/6|Wordle 306 6/6|Wordle 306 X/6'))
 
 april_22_clean <- filter(april_22, str_detect(text, 'Wordle 307 1/6|Wordle 307 2/6|Wordle 307 3/6|
-  Wordle 307 4/6|Wordle 307 5/6|Wordle 307 6/6|Wordle 307 X/6'))
+Wordle 307 4/6|Wordle 307 5/6|Wordle 307 6/6|Wordle 307 X/6'))
 
 april_23_clean <- filter(april_23, str_detect(text, 'Wordle 308 1/6|Wordle 308 2/6|Wordle 308 3/6|
-  Wordle 308 4/6|Wordle 308 5/6|Wordle 308 6/6|Wordle 308 X/6'))
+Wordle 308 4/6|Wordle 308 5/6|Wordle 308 6/6|Wordle 308 X/6'))
 
 cleanlist <- list(april_4_clean, april_5_clean, april_6_clean, april_7_clean, april_8_clean,
                   april_9_clean, april_10_clean, april_17_clean, april_18_clean, april_19_clean,
@@ -285,3 +285,7 @@ april_23_clean <- select(april_23_clean, c(text, created_at, place_name,
                  if_else(grepl('6/6', text), '6', 'DNF'
                          )))))),
          hardmode = if_else(grepl('/6*', text, fixed = TRUE, useBytes = TRUE), TRUE, FALSE))
+
+masterdata <- rbind(april_4_clean, april_5_clean, april_6_clean, april_7_clean, april_8_clean,
+                  april_9_clean, april_10_clean, april_17_clean, april_18_clean, april_19_clean,
+                  april_20_clean, april_21_clean, april_22_clean, april_23_clean)
