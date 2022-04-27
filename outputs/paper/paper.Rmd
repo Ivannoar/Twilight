@@ -5,7 +5,7 @@ author:
   - Ivan Li
 thanks: "Code and data are available at: https://github.com/Ivannoar/Twilight."
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "Using the Twitter API, data was gathered recording the public scores of Wordle players over one month. The frequency of each daily score was obtained and analyzed based on level of success, time, and geographical location. It was found that ___. These results may have significance in literary and linguistic analysis."
+abstract: "Using the Twitter API, data was gathered recording the public scores of Wordle players over one month. The frequency of each daily score was obtained and analyzed based on level of success, geographical location, and properties of the word. It was found that ___. These results may have significance in literary and linguistic analysis."
 output:
   bookdown::pdf_document2
 toc: FALSE
@@ -16,26 +16,111 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(kableExtra)
+library(countrycode)
+library(chron)
 ```
 
 # Introduction
 (put citations later)
 Wordle is an online word-guessing game bearing resemblance to historically popular word puzzles such as the New York Times crossword puzzle and the board game Mastermind. Players are given a five-letter word each day and are asked to guess the word within six tries. If the word is not guessed in earlier attempts, the letters for your word will become either grey, yellow, or green: grey indicating that the letter was not found anywhere in the word, yellow indicating the presence of the letter but in the wrong position, and green indicating both letter and position are correct. The goal is to guess five green letters and therefore the correct word. The game was created by Josh Wardle, a software engineer who created the game for himself and his partner to pass the time during the 2021 COVID-19 pandemic. The meteoric rise in popularity of his creation has been attributed to a feature where players can easily copy and paste their results to share with their friends and family. Wardle's game found international spread in late December of 2021 thanks to multiple factors, including the ease in sharing results and the daily nature of the game, as well as its simplicity. Wordle's popularity can be seen to its fullest extent on Twitter, where millions of users share their results every day by pasting their scores via the website's built-in feature. 
 
-This paper aims to analyze several metrics of Wordle's popularity on Twitter. As a result of millions of users sharing their scores each day, analysis can and has been done on variables including average score- a recent study found that Sweden was the country with the lowest average guesses with 3.72 average guesses out of a maximum of 6. Here, some key findings we wish to seek include attempting to model whether certain characteristics of a word correlate with its average difficulty, whether players have been improving in the game since its rise in popularity, and if the time of completion since the game resetting has any correlation with the average score. These metrics were not discussed deeply in prior papers and may be of interest to future puzzle makers, linguists, and game theorists. 
+This paper aims to analyze several metrics of Wordle's popularity on Twitter. As a result of millions of users sharing their scores each day, analysis can and has been done on variables including average score- a recent study found that Sweden was the country with the lowest average guesses with 3.72 average guesses out of a maximum of 6. Here, some key findings we wish to seek include attempting to model whether certain characteristics of a word correlate with its average difficulty, and the average score of Twitter users in relation to their geographical location, such as their country of residence. These metrics were not discussed deeply in prior papers and may be of interest to future puzzle makers, linguists, and game theorists.
 
-Using the Twitter API, tweets pertaining to Wordle were gathered from various time periods in Wordle's popularity. The periods analyzed were the weeks following the game's rise in popularity, and the most recent week at time of writing (March 27 - April 2 2022). User scores were collected and aggregated along with time of posting, geographical location, and other data provided by Twitter. The results were turned into graphical data and analyzed according to our key missions. 
+Using the Twitter API, tweets pertaining to Wordle were gathered and aggregated into multiple datasets used for analysis. These tweets were gathered during intervals from April 4-10 2022, and April 17-23 2022). User scores were collected by searching for common templates that are used by the website domain to share scores in their tweets. Along with the score the used reached, the time of posting, geographical location, and other data provided by Twitter were also obtained. The results were turned into graphical data and analyzed according to our key missions. 
 
 In the Data section, we go over the data gathered from the Twitter API and how it was cleaned and arranged for proper statistical analysis. We discuss variables used, methodology, and graphs showing distributions of data. In the Model section, we discuss our model and its implications for how we interpret our results going forward. In the Results section, graphical data is shown and used to present our story according to the key goals and findings we discover during our analysis. Lastly, we discuss what has been done, its significance, and weaknesses of the paper in our Discussion section.
 
 # Data
 
+```{r}
 
+set.seed(1234)
+
+simulated_data <-
+  tibble(
+    'Date' = sample(seq(as.Date('2022/04/05'), as.Date('2022/04/23'), by="day"), 10, replace = TRUE),
+         
+    'Time' = sample(format(seq(as.POSIXct('00:00:00', format = "%T"), 
+                    as.POSIXct('23:59:59', format = "%T"), by = "sec"), "%T"), 10, replace = TRUE),
+    'Location' = sample(countrycode::codelist$country.name.en, 10),     
+    'Score' = sample(x = c('1/6', '2/6', '3/6', '4/6', '5/6', '6/6', 'DNF'), 10, replace = TRUE),
+    'Hardmode' = sample(c(TRUE, FALSE), 10, replace = TRUE)
+  )
+simulated_data
+```
+
+
+```{r}
+masterdata_clean |>
+  slice(1:5) |>
+  kable(
+    caption = "First five rows of a dataset showing Wordle-related tweets",
+    col.names = c("Date", "Time", "Country", "Country Code", "Wordle Score", "Hardmode"),
+    digits = 1,
+    booktabs = TRUE, 
+    linesep = ""
+  ) |> kable_styling(latex_options = c("striped", "scale_down"))
+  
+```
+
+```{r}
+masterdata_clean |>
+  filter(hardmode == TRUE) |>
+  ggplot(mapping = aes(x = score)) + geom_bar()
+
+masterdata_clean |>
+  filter(hardmode == FALSE) |>
+  ggplot(mapping = aes(x = score)) + geom_bar()
+
+masterdata_clean |>
+  ggplot(mapping = aes(x = score, fill = hardmode)) + geom_bar()
+
+```
+
+```{r}
+
+data_firstweek |>
+  ggplot(mapping = aes(x = score, fill = as.character(date_tweeted))) + geom_bar(position = "dodge")
+
+```
+
+```{r}
+
+average_score_df <- masterdata_clean |>
+  group_by(date_tweeted) |>
+  transmute(average_score = mean(as.numeric(score))) |>
+  unique() |>
+  arrange(date_tweeted, desc(date_tweeted))
+
+average_score_df <- average_score_df[-c(15, 16), ]
+
+average_score_df$daily_word <- c("Shawl", "Natal", "Comma", "Foray", "Scare", "Stair", "Black",
+                                 "Ample", "Flair", "Foyer", "Cargo", "Oxide", "Plant", "Olive")
+
+average_score_df$rank <- c("11938", "26852", "11931", "10467", "3837", "2880", "253",
+                                 "6374", "11502", "9811", "4953", "10008", "623", "6242")
+
+
+average_score_df |> 
+  kable(
+    caption = "Average score of Twitter Wordle players",
+    col.names = c("Date", "Average Score", "Daily Word", "Word Frequency Rank"),
+    digits = 1,
+    booktabs = TRUE, 
+    linesep = ""
+  ) |> 
+  kable_styling(latex_options = c("striped", "scale_down"))
+
+```
 
 
 # Model
 
+In this paper, we seek to use a regression model to determine if there were relationships between the average score that Twitter users scored daily and properties of the given word for the day. We aim to use both continuous and dummy variables in our regression model, so logistic regression models will be used to fulfill this purpose. These logistic regression models were able to conclude that ______.
+The models are shown as follows, with one continuous variable and one binary variable:
 
+model here
 
 # Results
 
