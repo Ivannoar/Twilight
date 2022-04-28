@@ -1,14 +1,19 @@
 ---
-title: "Analyzing difficulty of Wordle using aggregate Twitter responses to determine public reaction"
-subtitle: "My subtitle if needed"
-author: 
-  - Ivan Li
-thanks: "Code and data are available at: https://github.com/Ivannoar/Twilight."
+title: Analyzing difficulty of Wordle using linguistic characteristics to determine
+  average success of Twitter players
+author: "Ivan Li"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "Using the Twitter API, data was gathered recording the public scores of Wordle players over one month. The frequency of each daily score was obtained and analyzed based on level of success, geographical location, and linguistic properties of the word. It was found that the linguistic properties of words such as commonality have impacts on player success. These results may have significance in literary and linguistic analysis."
 output:
-  bookdown::pdf_document2
-toc: FALSE
+    pdf_document:
+        keep_tex: true
+abstract: Using the Twitter API, data was gathered recording the public scores of
+  Wordle players over one month. The frequency of each daily score was obtained and
+  analyzed based on level of success, geographical location, and linguistic properties
+  of the word. It was found that the linguistic properties of words such as commonality
+  have impacts on player success. These results may have significance in literary
+  and linguistic analysis.
+thanks: 'Code and data are available at: https://github.com/Ivannoar/Twilight.'
+toc: no
 bibliography: references.bib
 ---
 
@@ -22,9 +27,12 @@ library(chron)
 library(ds4psy)
 library(scales)
 library(DiagrammeR)
+library(knitr)
+library(tinytex)
 
-masterdata <- read.csv("inputs/data/masterdata.csv")
-masterdata_clean <- read.csv("inputs/data/masterdata_clean.csv")
+masterdata <- read_csv("masterdata.csv")
+masterdata_clean <- read.csv("masterdata_clean.csv")
+
 ```
 
 # Introduction
@@ -49,7 +57,7 @@ To accomplish the goals set out in this paper, the data used consisted of a samp
 The dataset consisted of 90 variables which needed to be trimmed down to a manageable list of relevant data. These variables included unique tweet identifiers and the exact text included, details regarding whether the tweet was original or sent as a reply or response to another, the number of likes and retweets on the initial or response posts, the device used for sending posts, and links to the posts and accounts of each observation. We seeked to only utilize the score the user had achieved in the game, their country/location, the date of the message, and the presence of 'hard mode' while playing, which adds the condition that you must use hints you are given from prior guesses. To accomplish this, variables needed to be changed and manipulated. From the raw data, which used Unix time to store chronological data, the tidyverse [@citetidyverse] and lubridate [@citelubridate] packages were used to create new variables. From the Unix time, the date was extracted from the raw data and stored in a YYYY-MM-DD format. An indicator variable corresponding to whether the user used hard mode was created and each observation was given a classification based on the contents of their tweet. The final dataframe contained 4 variables, those variables being the date, country, score, and gamemode for each tweet instance provided. 
 
 
-```{r preview, tab.cap = "Sample of Cleaned Twitter Dataset", tab.width = 5, echo=FALSE}
+```{r preview, tab.cap = "Sample of Cleaned Twitter Dataset", tab.width=5, echo=FALSE}
 masterdata_clean |>
   select(date_tweeted, country, score, hardmode) |>
   arrange(date_tweeted) |>
@@ -73,7 +81,7 @@ There is also inherent bias included in the dataset as a result of the nature of
 ## Plots
 
 Plots were created corresponding to the chosen variables in our cleaned dataset in order to familiarize with the obtained data and provide motivation for further analysis. To begin with, we wish to plot the frequency of each result/score across our entire dataset. We compare the frequency of each result and plot it as both the raw frequency and the percentage that each score appears in our dataset. Note that failures, where the user was unable to guess the word in the maximum 6 tries, is plotted as a score of 7. We observe that a majority of Twitter users guess complete the game within 4 tries, and that the distribution of guesses is sensibly unimodal. The distribution is slightly right-skewed, and the dataset shows that the number of failures is over three times as much as the number of people who guess the word on their first try, which is expected due to the low probability of guessing the exact word with no prior information compared to the chance of failure. This is also reflected in the proportions between scores of 2 and 6. 
-```{r freq, fig.cap = "Scores of Twitter Wordle Players", echo = FALSE, fig.height=4, fig.width=6}
+```{r freq, fig.cap = "Scores of Twitter Wordle Players", echo = FALSE}
 masterdata_clean |>
   ggplot(mapping = aes(x = score)) + geom_bar(fill = '#6aaa64') + xlab("Score") + ylab("Frequency") +
   geom_text(aes(label = ..count..), vjust = -0.5, stat = "count")
@@ -82,7 +90,7 @@ masterdata_clean |>
 ```
 
 
-```{r perc, fig.cap = "Proportions of Scores of Twitter Wordle Players", echo = FALSE, fig.height=4, fig.width=6}
+```{r perc, fig.cap = "Proportions of Scores of Twitter Wordle Players", echo = FALSE}
 masterdata_clean %>% 
     count(Score = factor(score)) %>% 
     mutate(pct = prop.table(n)) %>% 
@@ -96,7 +104,7 @@ masterdata_clean %>%
 ```
 Next, we look to compare the distributions between users who use hard mode and users who do not. It must be noted that the amount of people who do not enable hard mode dwarf the number of people who do. However, it is possible that a non-insignificant majority of people who do not report using hard mode are self-imposing hard mode conditions onto themselves, whether intentionally or unintentionally. Regardless, we plot the proportion of hard mode users to normal users and see that 
 94% of users in our sample do not use hardmode, which can be explained by the fact that hard mode is opt-in and users may not wish to bother with enabling it for multiple reasons. We then repeat the distribution of scores in the previous set of graphs but separate the results by the mode that users play on. From our graphs, we see that our sample of players on hard mode more commonly reach scores of 3 and 4, but also have higher failure rate than normal players. A strategy used by normal players is to disregard hints in the first 2 or 3 words by trying to 'use' as many common letters as possible to reveal as many letters in the word as possible before making a realistic guess, while hard mode players must use the hints they are given which reduces the efficiency of the strategy but means that each word they use has a relatively higher chance of being correct. However, this runs into problems when it is difficult to use the hints provided or the word shares a structure with other common words (for example, Wordle #284 was 'stove': a player could easily waste guesses on 'stone', 'store', 'stoke', etc), which results in a higher failure rate.  
-```{r mode, fig.cap = "Proportions of Gamemodes of Twitter Wordle Players", echo = FALSE, fig.height=4, fig.width=6}
+```{r mode, fig.cap = "Proportions of Gamemodes of Twitter Wordle Players", echo = FALSE}
 masterdata_clean %>% 
     count(count = factor(hardmode)) %>% 
     mutate(pct = prop.table(n)) %>% 
@@ -110,7 +118,7 @@ masterdata_clean %>%
 ```
 
 
-```{r percgamemode, fig.cap = "Proportions of Scores of Twitter Wordle Players by Gamemode", echo = FALSE, fig.height=4, fig.width=6}
+```{r percgamemode, fig.cap = "Proportions of Scores of Twitter Wordle Players by Gamemode", echo = FALSE}
 # Distributions
 
 masterdata_clean %>%
@@ -141,7 +149,7 @@ masterdata_clean %>%
 ```
 
 We also show the frequency that countries occur in our dataset, using the geographical data provided in the tweets. We display the top 10 countries found in our dataset and observe that the Americas and the UK make up a majority of the tweets found in the data. 
-```{r country, fig.cap = "Top 10 Frequent Wordle Countries", echo = FALSE, fig.height=4, fig.width=6}
+```{r country, fig.cap = "Top 10 Frequent Wordle Countries", echo = FALSE}
 countryfreq <- table(masterdata_clean$country)
 countryfreq |>
   as.data.frame() |>
@@ -156,7 +164,7 @@ countryfreq |>
   ) |> kable_styling(latex_options = c("striped", "scale_down"))
 ```
 To conduct further analysis, we seek to plot data based on the average score of users on different dates and different countries. Shown is a table displaying the date of the daily word being given, the average score of Twitter users across our dataset, and the word of the day. Also plotted is the distribution of the 'easiest' and 'hardest' words determined by average score, displayed in percentages and grouped by the mode used.
-```{r wordinfo, fig.cap = "Score and Word by Date", echo = FALSE, fig.height=4, fig.width=6}
+```{r wordinfo, fig.cap = "Score and Word by Date", echo = FALSE}
 
 average_score_df <- masterdata_clean |>
   group_by(date_tweeted) |>
@@ -186,7 +194,7 @@ average_score_df |>
 
 ```
 
-```{r somestats, fig.cap = "Examples of Wordle Scores Grouped By Gamemode", echo = FALSE, fig.height=4, fig.width=6}
+```{r somestats, fig.cap = "Examples of Wordle Scores Grouped By Gamemode", echo = FALSE}
 
 masterdata_clean %>%
     filter(date_tweeted == "2022-04-09") %>%
@@ -240,9 +248,9 @@ masterdata_clean %>%
 
 ```
 
-Finally, we conduct analysis on the words used in the game themselves. The following table shows the date the word was used, the average score users scored on it, the word of the day, the frequency of the word in texts according to the Corpus of Contemporary American English (COCA) [@citecoca], and the number of orthographic neighbors to the word according to MCWord [@citemcword]. Orthographic neighbors are defined as words which are the same length but differ by one letter (for example, scare and stare).
+Finally, we conduct analysis on the words used in the game themselves. The following table shows the date the word was used, the average score users scored on it, the word of the day, the frequency of the word in texts according to the Corpus of Contemporary American English (COCA), and the number of orthographic neighbors to the word according to MCWord. Orthographic neighbors are defined as words which are the same length but differ by one letter (for example, scare and stare).
 
-```{r ling, fig.cap = "Linguistic Properties of Wordle Words", echo = FALSE, fig.height=4, fig.width=6}
+```{r ling, fig.cap = "Linguistic Properties of Wordle Words", echo = FALSE}
 average_score_df$rank <- c("11938", "26852", "11931", "10467", "3837", "2880", "253",
                                  "6374", "11502", "9811", "4953", "10008", "623", "6242")
 average_score_df$neighbournum <- c(2, 3, 1, 1, 10, 2, 5, 3, 1, 2, 1, 0, 5, 1)
@@ -263,7 +271,7 @@ average_score_df |>
 
 In this paper, we seek to use regression models to determine if there were relationships between the average score that Twitter users scored daily and properties of the given word for the day. We begin by constructing directed acyclic graphs to visualize the variables we wish to discuss and model, and clearly show the relationships we believe exist between them. Using the DAG as a visual, the paper aims to show that the frequency of the word in literature, the number of orthographic neighbours, and the game mode of the player all have significance in predicting the average score of a player. 
 
-```{r}
+```{r, echo=FALSE}
 # Thanks to https://www.tellingstorieswithdata.com/causality.html#causality .
 
 DiagrammeR::grViz("
@@ -307,19 +315,19 @@ The paper predicts that the linguistic properties of words such as the number of
 
 $$Y_{1} = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2}  + \epsilon$$ 
 
-In our first multiple regression model, $$Y_{1}$$ represents the average number of guesses it takes a normal player to complete a given Wordle puzzle. $$X_{1}$$ represents the frequency rank of a given word used in the game, $$X_{2}$$ represents the number of orthographic neighbors that the word has, $$\beta_{0}$$ represents the intercept or average score when the frequency rank and number of neighbors is 0, and $$\beta_{1}$$ and $$\beta_{2}$$ represent the regression coefficients. For every one increase in frequency rank and every one increased neighbour, $$Y_{1}$$ increases by $$\beta_{2}$$ and $$\beta_{2}$$ respectively.
+In our first multiple regression model, $Y_{1}$ represents the average number of guesses it takes a normal player to complete a given Wordle puzzle. $X_{1}$ represents the frequency rank of a given word used in the game, $X_{2}$ represents the number of orthographic neighbors that the word has, $\beta_{0}$ represents the intercept or average score when the frequency rank and number of neighbors is 0, and $\beta_{1}$ and $\beta_{2}$ represent the regression coefficients. For every one increase in frequency rank and every one increased neighbour, $Y_{1}$ increases by $\beta_{2}$ and $\beta_{2}$ respectively.
 
 $$Y_{2} = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2}  + \epsilon$$
 
-The second multiple regression model is similar. $$Y_{2}$$ represents the average number of guesses it takes a player on hard mode to complete a given puzzle and the other predictors and coefficients share the same meaning. We then wish to model the probability of failure to complete the game based on the same groupings of game mode and linguistic properties. The models are as follows:
+The second multiple regression model is similar. $Y_{2}$ represents the average number of guesses it takes a player on hard mode to complete a given puzzle and the other predictors and coefficients share the same meaning. We then wish to model the probability of failure to complete the game based on the same groupings of game mode and linguistic properties. The models are as follows:
 
-$$Y_{3} = \textup{Pr}(y_{i}=1)=\textup{logit}^{-1}(\beta_{0H} + \beta_{1H}X_{1H} + \beta_{2H}X_{2H})$$
+$$Y_{3} = {Pr}(y_{i}=1)={logit}^{-1}(\beta_{0H} + \beta_{1H}X_{1H} + \beta_{2H}X_{2H})$$
 
-$$Y_{4} = \textup{Pr}(y_{i}=1)=\textup{logit}^{-1}(\beta_{0H} + \beta_{1H}X_{1H} + \beta_{2H}X_{2H})$$
+$$Y_{4} = {Pr}(y_{i}=1)={logit}^{-1}(\beta_{0H} + \beta_{1H}X_{1H} + \beta_{2H}X_{2H})$$
 
-$$Y_{3}$$ and $$Y_{4}$$ respectively represent the average probability that a normal Wordle player and a Wordle player on hard mode will fail in guessing the daily word within 6 guesses. The other predictors and coefficients share the same meaning as the prior models.
+$Y_{3}$ and $Y_{4}$ respectively represent the average probability that a normal Wordle player and a Wordle player on hard mode will fail in guessing the daily word within 6 guesses. The other predictors and coefficients share the same meaning as the prior models.
 
-```{r}
+```{r, echo=FALSE}
 masterdata_clean_modelmain <- cbind(masterdata$text, masterdata_clean)|>
   mutate(text = masterdata$text)|>
   subset(select = -c(1))|>
@@ -400,25 +408,25 @@ Two variations of two models were created and analyzed for a total of four compl
 
 ## Modelling Average Score
 
-The first form of model was created to predict the average score of a Wordle player based on the frequency of the word and the number of orthographic neighbours the word had. Our results show that if a player is playing normally, i.e. not using hard mode, their average number of guesses will increase by 0.00004126 for each rank the word is from 1. This corresponds to the value of $$Y_{1}$$ = 0.00004126 in our model equation. For example, a word around the ranking 10000 would increase the average number of guesses by 0.4126. Furthermore, the value of $$Y_{2}$$ was determined to be -0.04117. This can be interpreted as: For every orthographical neighbour the word of the day has, the average number of guesses it takes a normal Wordle player will be reduced by 0.04117 guesses. Lastly, the intercept was found to be $$\beta_{0}$$ = 3.954. The interpretation of this result is that a word at ranking '0' and with 0 neighbours will be guessed in an average of 3.954 tries; it represents the average number of guesses when the other two predictors are held constant. 
+The first form of model was created to predict the average score of a Wordle player based on the frequency of the word and the number of orthographic neighbours the word had. Our results show that if a player is playing normally, i.e. not using hard mode, their average number of guesses will increase by 0.00004126 for each rank the word is from 1. This corresponds to the value of $Y_{1}$ = 0.00004126 in our model equation. For example, a word around the ranking 10000 would increase the average number of guesses by 0.4126. Furthermore, the value of $Y_{2}$ was determined to be -0.04117. This can be interpreted as: For every orthographical neighbour the word of the day has, the average number of guesses it takes a normal Wordle player will be reduced by 0.04117 guesses. Lastly, the intercept was found to be $\beta_{0}$ = 3.954. The interpretation of this result is that a word at ranking '0' and with 0 neighbours will be guessed in an average of 3.954 tries; it represents the average number of guesses when the other two predictors are held constant. 
 
-```{r}
+```{r, echo=FALSE}
 summary(model1)
 ```
 The second model used the same predictor variables but used a dataset consisting of only players using Wordle's hard mode. This means that the interpretations of the variables remain the same, but they have the effect of changing the average number of guesses for a hard mode player and not a normal player. This has an effect on the values of the coefficients, which are reflected in the model. In the secondary model, the intercept has a value of 3.843, the ranking coefficient has a value of 0.00004232, and the neighbour coefficient has a value of -0.04185. In general, there is not a drastic change in the values of the coefficients between each model. The second model features a lower intercept, implying that hard mode players finish the game slightly faster, but their results are very slightly more impacted by the frequency of the word each day.
 
-```{r}
+```{r, echo=FALSE}
 summary(model2)
 ```
 ## Modelling failure rate
 
-The second form of model was created to predict the failure rate of players across both game modes using the same metrics as the first model. The results of these models have similar structure due to the simplicity of the models and the small number of predictor variables, but the values and their interpretations are different and reveal separate results from the previous models. The third model, which predicts failure rate of a normal Wordle player, shows that the intercept has a value of $$\beta_{0}$$ = 0.02647. Because this model is predicting a percentage, the interpretation of the intercept shows that if a word has 0 rank and 0 orthographical neighbours, a normal Wordle player will have a 2.647% chance of failure on average according to the model. The value of the rank coefficient is $$Y_{1}$$ = 0.000001314. For every rank a word has, the percentage chance that a normal will fail to guess the word within 6 tries increases by 0.0001314. If a word had a rank of 10000, then the chance that a player would fail increases by 1.314 from the intercept value. The neighbour coefficient is recorded as being $$Y_{2}$$ = -0.0004534, and shows that for every neighbour a word has, the chances of failure drop by 0.04534%. 
+The second form of model was created to predict the failure rate of players across both game modes using the same metrics as the first model. The results of these models have similar structure due to the simplicity of the models and the small number of predictor variables, but the values and their interpretations are different and reveal separate results from the previous models. The third model, which predicts failure rate of a normal Wordle player, shows that the intercept has a value of $\beta_{0}$ = 0.02647. Because this model is predicting a percentage, the interpretation of the intercept shows that if a word has 0 rank and 0 orthographical neighbours, a normal Wordle player will have a 2.647% chance of failure on average according to the model. The value of the rank coefficient is $Y_{1}$ = 0.000001314. For every rank a word has, the percentage chance that a normal will fail to guess the word within 6 tries increases by 0.0001314. If a word had a rank of 10000, then the chance that a player would fail increases by 1.314 from the intercept value. The neighbour coefficient is recorded as being $Y_{2}$ = -0.0004534, and shows that for every neighbour a word has, the chances of failure drop by 0.04534%. 
 
-```{r}
+```{r, echo=FALSE}
 summary(model3)
 ```
 The final model which predicts the failure rate of hard mode players shows significantly different results than the previous model predicting failure rates of normal players. We observe an intercept of 0.0301, a rank coefficient of 0.000001598, and a neighbour coefficient of -0.00134. A table shows the two comparisons side by side along with the difference by value and percentage.
-```{r}
+```{r, echo=FALSE}
 summary(model4)
 ```
 
