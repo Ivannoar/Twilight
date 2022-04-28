@@ -17,14 +17,9 @@
 library(haven)
 library(tidyverse)
 library(rtweet)
-library(twitteR)
-library(base64enc)
-library(rvest)
-library(jsonlite)
-library(utils)
-library(httr)
-library(httpuv)
 library(lubridate)
+
+
 
 
 # Read in the raw data.
@@ -306,6 +301,9 @@ masterdata <- masterdata |>
 
 masterdata_clean <- masterdata |>
   select(date_tweeted, country, country_code, score, hardmode)
+
+masterdata_clean <- masterdata_clean |>
+  mutate(hardmode = if_else(hardmode, 'On', 'Off'))
 
 
 data_firstweek <- rbind(april_4_clean, april_5_clean, april_6_clean, april_7_clean, april_8_clean,
