@@ -24,10 +24,10 @@ library(lubridate)
 
 # Read in the raw data.
 
-consumer_key <- 'My0aeiHkcbrj77T6TOH5Mj2pv'
-consumer_secret <- '0BcdOCvMujLjWYd6pTsuE7hGJKnrOuxJP7iFtuXUeEvYZJzxU6'
-access_token <- '1615605523-vkmoXuCP1Fq3J0fSYXp3ULsEItZXCTKnDbEcA7k'
-access_secret <- 'FNbx2Umo1nBwsx7DYocBKcodA2tLVB8MCVEtPHdSedH9q'
+consumer_key <- '***'
+consumer_secret <- '***'
+access_token <- '***'
+access_secret <- '***'
 
 # https://github.com/sarikayamehmet/GetOldTweets-R
 
@@ -36,53 +36,53 @@ create_token(app = "uoftwitter", consumer_key, consumer_secret, access_token, ac
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 get_favorites(user = "RohanAlexander")
 
-
+# Obtaining old tweets
 april4 <- search_tweets(q = "Wordle 289", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april4,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_4.csv")
+  write.csv(x=df, file = "inputs/data/april_4.csv")
 april5 <- search_tweets(q = "Wordle 290", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april5,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_5.csv")
+  write.csv(x=df, file = "inputs/data/april_5.csv")
 april6 <- search_tweets(q = "Wordle 291", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april6,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_6.csv")
+  write.csv(x=df, file = "inputs/data/april_6.csv")
 april7 <- search_tweets(q = "Wordle 292", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april7,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_7.csv")
+  write.csv(x=df, file = "inputs/data/april_7.csv")
 april8 <- search_tweets(q = "Wordle 293", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april8,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_8.csv")
+  write.csv(x=df, file = "inputs/data/april_8.csv")
 april9 <- search_tweets(q = "Wordle 294", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april9,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_9.csv")
+  write.csv(x=df, file = "inputs/data/april_9.csv")
 april10 <- search_tweets(q = "Wordle 295", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april10,2,as.character) 
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_10.csv")
+  write.csv(x=df, file = "inputs/data/april_10.csv")
 
 april17 <- search_tweets(q = "Wordle 302", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april17,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_17.csv")
+  write.csv(x=df, file = "inputs/data/april_17.csv")
 april18 <- search_tweets(q = "Wordle 303", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april18,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_18.csv")
+  write.csv(x=df, file = "inputs/data/april_18.csv")
 april19 <- search_tweets(q = "Wordle 304", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april19,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_19.csv")
+  write.csv(x=df, file = "inputs/data/april_19.csv")
 april20 <- search_tweets(q = "Wordle 305", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april20,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_20.csv")
+  write.csv(x=df, file = "inputs/data/april_20.csv")
 april21 <- search_tweets(q = "Wordle 306", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april21,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_21.csv")
+  write.csv(x=df, file = "inputs/data/april_21.csv")
 april22 <- search_tweets(q = "Wordle 307", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april22,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_22.csv")
+  write.csv(x=df, file = "inputs/data/april_22.csv")
 april23 <- search_tweets(q = "Wordle 308", n = 36000, retryonratelimit = TRUE, type = "mixed")
   df <- apply(april23,2,as.character)
-  write.csv(x=df, file = "C:/Users/liiva/OneDrive/april_23.csv")
+  write.csv(x=df, file = "inputs/data/april_23.csv")
 
-april26 <- search_tweets(q = "Wordle 310", n = 18000, type = "mixed")  
-
+  
+# Reading from local files
 april_4 <- read.csv('inputs/data/april_4.csv')
 april_5 <- read.csv('inputs/data/april_5.csv')
 april_6 <- read.csv('inputs/data/april_6.csv')
@@ -97,7 +97,9 @@ april_20 <- read.csv('inputs/data/april_20.csv')
 april_21 <- read.csv('inputs/data/april_21.csv')
 april_22 <- read.csv('inputs/data/april_22.csv')
 april_23 <- read.csv('inputs/data/april_23.csv')
-  
+
+# Cleaning data
+
 april_4_clean <- filter(april_4, str_detect(text, 'Wordle 289 1/6|Wordle 289 2/6|Wordle 289 3/6|Wordle 289 4/6|Wordle 289 5/6|Wordle 289 6/6|Wordle 289 X/6'))
 
 april_5_clean <- filter(april_5, str_detect(text, 'Wordle 290 1/6|Wordle 290 2/6|Wordle 290 3/6|Wordle 290 4/6|Wordle 290 5/6|Wordle 290 6/6|Wordle 290 X/6'))
@@ -305,23 +307,5 @@ masterdata_clean <- masterdata |>
 masterdata_clean <- masterdata_clean |>
   mutate(hardmode = if_else(hardmode, 'On', 'Off'))
 
-
-data_firstweek <- rbind(april_4_clean, april_5_clean, april_6_clean, april_7_clean, april_8_clean,
-                  april_9_clean, april_10_clean)
-data_secondweek <- rbind(april_17_clean, april_18_clean, april_19_clean,
-                  april_20_clean, april_21_clean, april_22_clean, april_23_clean)
-
-data_firstweek <- data_firstweek |> 
-  mutate(score = str_replace(score, 'DNF', '7'))
-data_secondweek <- data_secondweek |> 
-  mutate(score = str_replace(score, 'DNF', '7'))
-
-data_firstweek <- data_firstweek |>
-  mutate(time_tweeted = as_datetime(created_at))
-data_secondweek <- data_secondweek |>
-  mutate(time_tweeted = as_datetime(created_at))
-
-data_firstweek <- data_firstweek |>
-  mutate(time_tweeted_utc = format(time_tweeted,"%H:%M:%S"), date_tweeted = as.Date(time_tweeted))
-data_secondweek <- data_secondweek |>
-  mutate(time_tweeted_utc = format(time_tweeted,"%H:%M:%S"), date_tweeted = as.Date(time_tweeted))
+write.csv(masterdata, "inputs/data/masterdata.csv")
+write.csv(masterdata_clean, "inputs/data/masterdata_clean.csv")
