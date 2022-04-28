@@ -4,8 +4,7 @@ title: Analyzing difficulty of Wordle using linguistic characteristics to determ
 author: "Ivan Li"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-    pdf_document:
-        keep_tex: true
+  pdf_document: default
 abstract: Using the Twitter API, data was gathered recording the public scores of
   Wordle players over one month. The frequency of each daily score was obtained and
   analyzed based on level of success, geographical location, and linguistic properties
@@ -15,6 +14,7 @@ abstract: Using the Twitter API, data was gathered recording the public scores o
 thanks: 'Code and data are available at: https://github.com/Ivannoar/Twilight.'
 toc: no
 bibliography: references.bib
+always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -29,6 +29,7 @@ library(scales)
 library(DiagrammeR)
 library(knitr)
 library(tinytex)
+library(haven)
 
 masterdata <- read_csv("masterdata.csv")
 masterdata_clean <- read.csv("masterdata_clean.csv")
@@ -58,17 +59,17 @@ The dataset consisted of 90 variables which needed to be trimmed down to a manag
 
 
 ```{r preview, tab.cap = "Sample of Cleaned Twitter Dataset", tab.width=5, echo=FALSE}
-masterdata_clean |>
-  select(date_tweeted, country, score, hardmode) |>
-  arrange(date_tweeted) |>
-  slice(1:10) |>
+masterdata_clean %>%
+  select(date_tweeted, country, score, hardmode) %>%
+  arrange(date_tweeted) %>%
+  slice(1:10) %>%
   kable(
     caption = "First ten rows of a dataset showing Wordle-related tweets",
     col.names = c("Date", "Country", "Wordle Score", "Hardmode"),
     digits = 1,
     booktabs = TRUE, 
     linesep = ""
-  ) |>
+  ) %>%
   kable_styling(latex_options = c("striped", "scale_down"))
   
 ```
@@ -82,7 +83,7 @@ There is also inherent bias included in the dataset as a result of the nature of
 
 Plots were created corresponding to the chosen variables in our cleaned dataset in order to familiarize with the obtained data and provide motivation for further analysis. To begin with, we wish to plot the frequency of each result/score across our entire dataset. We compare the frequency of each result and plot it as both the raw frequency and the percentage that each score appears in our dataset. Note that failures, where the user was unable to guess the word in the maximum 6 tries, is plotted as a score of 7. We observe that a majority of Twitter users guess complete the game within 4 tries, and that the distribution of guesses is sensibly unimodal. The distribution is slightly right-skewed, and the dataset shows that the number of failures is over three times as much as the number of people who guess the word on their first try, which is expected due to the low probability of guessing the exact word with no prior information compared to the chance of failure. This is also reflected in the proportions between scores of 2 and 6. 
 ```{r freq, fig.cap = "Scores of Twitter Wordle Players", echo = FALSE}
-masterdata_clean |>
+masterdata_clean %>%
   ggplot(mapping = aes(x = score)) + geom_bar(fill = '#6aaa64') + xlab("Score") + ylab("Frequency") +
   geom_text(aes(label = ..count..), vjust = -0.5, stat = "count")
 
@@ -151,25 +152,25 @@ masterdata_clean %>%
 We also show the frequency that countries occur in our dataset, using the geographical data provided in the tweets. We display the top 10 countries found in our dataset and observe that the Americas and the UK make up a majority of the tweets found in the data. 
 ```{r country, fig.cap = "Top 10 Frequent Wordle Countries", echo = FALSE}
 countryfreq <- table(masterdata_clean$country)
-countryfreq |>
-  as.data.frame() |>
-  arrange(desc(Freq)) |>
-  slice(1:10) |>
+countryfreq %>%
+  as.data.frame() %>%
+  arrange(desc(Freq)) %>%
+  slice(1:10) %>%
   kable(
     caption = "Top 10 most common countries found in dataset",
     col.names = c("Country", "Frequency"),
     digits = 1,
     booktabs = TRUE, 
     linesep = ""
-  ) |> kable_styling(latex_options = c("striped", "scale_down"))
+  ) %>% kable_styling(latex_options = c("striped", "scale_down"))
 ```
 To conduct further analysis, we seek to plot data based on the average score of users on different dates and different countries. Shown is a table displaying the date of the daily word being given, the average score of Twitter users across our dataset, and the word of the day. Also plotted is the distribution of the 'easiest' and 'hardest' words determined by average score, displayed in percentages and grouped by the mode used.
 ```{r wordinfo, fig.cap = "Score and Word by Date", echo = FALSE}
 
-average_score_df <- masterdata_clean |>
-  group_by(date_tweeted) |>
-  transmute(average_score = mean(as.numeric(score))) |>
-  unique() |>
+average_score_df <- masterdata_clean %>%
+  group_by(date_tweeted) %>%
+  transmute(average_score = mean(as.numeric(score))) %>%
+  unique() %>%
   arrange(date_tweeted, desc(date_tweeted))
 average_score_df <- average_score_df[-c(8, 9, 17, 18), ]
 
@@ -179,17 +180,17 @@ average_score_df$daily_word <- c("shawl", "natal", "comma", "foray", "scare", "s
 
 
 
-#average_score_df$daily_word |>
+#average_score_df$daily_word %>%
   #count_chars()
 
-average_score_df |> 
+average_score_df %>% 
   kable(
     caption = "Average score of Twitter Wordle players",
     col.names = c("Date", "Average Score", "Daily Word"),
     digits = 1,
     booktabs = TRUE, 
     linesep = ""
-  ) |> 
+  ) %>% 
   kable_styling(latex_options = c("striped", "scale_down"))
 
 ```
@@ -255,14 +256,14 @@ average_score_df$rank <- c("11938", "26852", "11931", "10467", "3837", "2880", "
                                  "6374", "11502", "9811", "4953", "10008", "623", "6242")
 average_score_df$neighbournum <- c(2, 3, 1, 1, 10, 2, 5, 3, 1, 2, 1, 0, 5, 1)
 
-average_score_df |> 
+average_score_df %>% 
   kable(
     caption = "Linguistic Properties of Daily Wordle Words",
     col.names = c("Date", "Average Score", "Daily Word", "Word Frequency Rank", "Orthographic Neighbours"),
     digits = 1,
     booktabs = TRUE, 
     linesep = ""
-  ) |> 
+  ) %>% 
   kable_styling(latex_options = c("striped", "scale_down"))
 
 ```
@@ -327,21 +328,21 @@ $$Y_{4} = {Pr}(y_{i}=1)={logit}^{-1}(\beta_{0H} + \beta_{1H}X_{1H} + \beta_{2H}X
 
 $Y_{3}$ and $Y_{4}$ respectively represent the average probability that a normal Wordle player and a Wordle player on hard mode will fail in guessing the daily word within 6 guesses. The other predictors and coefficients share the same meaning as the prior models.
 
-```{r, echo=FALSE}
-masterdata_clean_modelmain <- cbind(masterdata$text, masterdata_clean)|>
-  mutate(text = masterdata$text)|>
-  subset(select = -c(1))|>
-  mutate(text = sub(".*Wordle ", "", text ))|>
+```{r, echo=FALSE, include=FALSE}
+masterdata_clean_modelmain <- cbind(masterdata$text, masterdata_clean)%>%
+  mutate(text = masterdata$text)%>%
+  subset(select = -c(1))%>%
+  mutate(text = sub(".*Wordle ", "", text ))%>%
   mutate(text = sub(" .*", "", text))
 
 # Thanks to https://stackoverflow.com/questions/25276155/remove-the-rows-that-have-non-numeric-characters-in-one-column-in-r
 
 masterdata_clean_modelmain <- masterdata_clean_modelmain[!is.na(as.numeric(as.character(masterdata_clean_modelmain$text))),]
 
-masterdata_clean_modelmain <- masterdata_clean_modelmain|>
+masterdata_clean_modelmain <- masterdata_clean_modelmain%>%
   filter(between(text, 289,310) == TRUE)
 
-masterdata_clean_modelmain <- masterdata_clean_modelmain |>
+masterdata_clean_modelmain <- masterdata_clean_modelmain %>%
   mutate(rank = ifelse(
     text==289, 11938, ifelse(
     text==290, 26852, ifelse(
@@ -358,7 +359,7 @@ masterdata_clean_modelmain <- masterdata_clean_modelmain |>
     text==307, 623, 6242
  ))))))))))))))
 
-masterdata_clean_modelmain <- masterdata_clean_modelmain |>
+masterdata_clean_modelmain <- masterdata_clean_modelmain %>%
   mutate(neighbournum = ifelse(
     text==289, 2, ifelse(
     text==290, 3, ifelse(
@@ -375,9 +376,9 @@ masterdata_clean_modelmain <- masterdata_clean_modelmain |>
     text==307, 5, 1
  ))))))))))))))
 
-masterdata_clean_modelmain_norm <-  masterdata_clean_modelmain|>
+masterdata_clean_modelmain_norm <-  masterdata_clean_modelmain%>%
   filter(hardmode == "Off")
-masterdata_clean_modelmain_hard <-  masterdata_clean_modelmain|>
+masterdata_clean_modelmain_hard <-  masterdata_clean_modelmain%>%
   filter(hardmode == "On")
 
 model1 <- lm(score ~ rank + neighbournum, data = masterdata_clean_modelmain_norm)
@@ -385,9 +386,9 @@ model1 <- lm(score ~ rank + neighbournum, data = masterdata_clean_modelmain_norm
 
 model2 <- lm(score ~ rank + neighbournum, data = masterdata_clean_modelmain_hard)
 
-masterdata_clean_modelmain_norm <- masterdata_clean_modelmain_norm|>
+masterdata_clean_modelmain_norm <- masterdata_clean_modelmain_norm%>%
   mutate(failed = (score == 7))
-masterdata_clean_modelmain_hard <- masterdata_clean_modelmain_hard|>
+masterdata_clean_modelmain_hard <- masterdata_clean_modelmain_hard%>%
   mutate(failed = (score == 7))
 
 model3 <- lm(failed ~ rank + neighbournum, data = masterdata_clean_modelmain_norm)
@@ -590,8 +591,6 @@ It is the author's hope that the results from this paper serve as a start and as
 	- Others can contribute to the dataset via GitHub's built-in collaboration features, which will be verified and finalized by the author.
 8. *Any other comments?*
 	- None
-
-# Additional details
 
 
 \newpage
