@@ -4,6 +4,6 @@ This repository contains a report which aims to analyze the public opinion of th
 
 The repository contains a file containing the report as well as the R code used to generate the report.
 
-The report can be found in outputs/paper/placeholder.pdf as well as the R Markdown file used to generate the PDF. 
+The report can be found in outputs/paper/paper.pdf as well as the R Markdown file used to generate the PDF. 
 
 Scripts used to create figures and tables can be found in scripts/01-data_cleaning.R.
